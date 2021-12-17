@@ -14,7 +14,12 @@ const { TELEGRAF_TOKEN } = process.env;
 
 (async () => {
   const bot = new Telegraf(TELEGRAF_TOKEN);
-
+  const help = `
+  🤖 @AlertaAGBCBo
+  🗣 El bot te ayudara a buscar diariamente el nombre de destinatario o nro de seguimiento.
+  📕 */nuevo*  => Para adicionar un nuevo nombre de destinatario o nro de seguimiento.
+  📗 */buscar* NOMBRE => Para buscar un nombre de destinatario o nro de seguimiento.
+  `;
   bot.telegram.getMe().then((botInformations) => {
     bot.options.username = botInformations.username;
     console.log(`Server has initialized bot nickname. Nick: ${botInformations.username}`);
@@ -22,11 +27,18 @@ const { TELEGRAF_TOKEN } = process.env;
 
   bot.start((ctx) => {
     const { message } = ctx.update;
-    ctx.reply(`Bienvenid@ ${message.chat.username} a @AlertaAGBCBot 🤖. Te ayudare a buscar diariamente tu nombre de destinatario o nro de seguimiento.`)
+    console.log('init user', message.chat.username);
+    ctx.replyWithMarkdown(help);
   });
 
   bot.help((ctx) => {
-
+    try {
+      const { message } = ctx.update;
+      console.log('message', message);
+      ctx.replyWithMarkdown(help);
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   bot.command('buscar', async (ctx) => {
